@@ -12,6 +12,7 @@
   IBOutlet UIScrollView *scrollView;
 	NSMutableArray *controllers;
 	NSMutableArray *questions;
+  BOOL lastRetrieveSucceeded;
 }
 
 @property (nonatomic, retain) NSMutableArray *controllers;
@@ -19,6 +20,10 @@
 
 - (void) retrieveQuestions;
 - (void) loadQuestion: (int) index;
+- (void) fadeInAnswer: (int) index;
+- (void) addLastQuestion;
+- (void) appendQuestion: (NSString *) question
+             withAnswer: (BOOL) answer;
 
 @end
 

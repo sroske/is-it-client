@@ -24,6 +24,18 @@
   return self;
 }
 
+- (void) fadeInAnswer
+{
+  [UIView beginAnimations: @"answerFadeIn" context: NULL];
+	[UIView setAnimationDuration: 0.5f];
+  [UIView setAnimationDelay: 0.2f];
+  [UIView setAnimationCurve: UIViewAnimationCurveEaseIn];
+
+	[answerLabel setAlpha: 1];
+	
+	[UIView commitAnimations];
+}
+
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {

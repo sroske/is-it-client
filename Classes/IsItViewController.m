@@ -10,6 +10,8 @@
 #import "IsItViewController.h"
 #import "QuestionViewController.h"
 
+#define QUESTIONS_PER_PAGE 30
+
 @implementation IsItViewController
 
 @synthesize questions, controllers;
@@ -61,15 +63,16 @@
 {
   [super viewDidLoad];
   
+  lastRetrieveSucceeded = NO;
+  
   self.questions = [[NSMutableArray alloc] init];
-  [self retrieveQuestions];
-	
-  // view controllers are created lazily
-  // in the meantime, load the array with placeholders which will be replaced on demand
   self.controllers = [[NSMutableArray alloc] init];
-  for (unsigned i = 0; i < [self.questions count]; i++) {
-    [self.controllers addObject: [NSNull null]];
-  }
+  
+  // add our default question
+  [self appendQuestion: @"Is it an App?" withAnswer: YES];
+  
+  // now fetch the questions from the server
+  [self retrieveQuestions];
   
   self.navigationController.navigationBarHidden = YES;
 	
@@ -82,36 +85,40 @@
 	
   [self loadQuestion: 0];
   [self loadQuestion: 1];
+  
+  [self fadeInAnswer: 0];
 }
 
 - (void) retrieveQuestions
 {
-	NSURL *jsonURL = [NSURL URLWithString: @"http://localhost:3000/random.js"];
+	NSURL *jsonURL = [NSURL URLWithString: @"http://is-it.bitgun.com/random.js"];
 	
 	NSString *jsonData = [[NSString alloc] initWithContentsOfURL: jsonURL];	
 	if (jsonData == nil)
 	{
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Webservice Down" 
-                                                    message: @"The webservice you are accessing is down. Please try again later." 
-                                                   delegate: self 
-                                          cancelButtonTitle: @"OK" 
-                                          otherButtonTitles: nil];
-		[alert show];	
-		[alert release];
+    [self addLastQuestion];
+    lastRetrieveSucceeded = NO;
 	}
 	else 
 	{
-    [self.questions addObjectsFromArray: [jsonData JSONValue]];
-    for (unsigned i = 0; i < 30; i++) {
+    NSMutableArray *fetched = [jsonData JSONValue];
+    [self.questions addObjectsFromArray: fetched];
+    for (unsigned i = 0; i < [fetched count]; i++) {
       [self.controllers addObject: [NSNull null]];
     }
+    // if we received less than a whole pages worth of questions, add the last question
+    if ([fetched count] < QUESTIONS_PER_PAGE)
+    {
+      [self addLastQuestion];
+    }
     scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * [self.questions count], scrollView.frame.size.height);
-    NSLog(@"added another 30 questions, totalling %i", [self.questions count]);
+    NSLog(@"added another 30 questions, total: %i", [self.questions count]);
+    lastRetrieveSucceeded = YES;
 	}
 	[jsonData release];	
 }
 
-#pragma mark paging
+#pragma mark Question manipulation
 
 - (void) loadQuestion: (int) index
 {
@@ -139,6 +146,27 @@
   }
 }
 
+- (void) addLastQuestion
+{
+  [self appendQuestion: @"Is this the last question?" withAnswer: YES];
+}
+
+- (void) appendQuestion: (NSString *) question
+             withAnswer: (BOOL) answer
+{
+  NSArray *keys = [NSArray arrayWithObjects: @"question", @"answer", nil];
+  NSArray *objects = [NSArray arrayWithObjects: question, answer ? @"1" : @"0", nil];
+  [self.questions addObject: [NSDictionary dictionaryWithObjects: objects forKeys: keys]];
+  [self.controllers addObject: [NSNull null]];
+  scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * [self.questions count], scrollView.frame.size.height);
+}
+
+- (void) fadeInAnswer: (int) index
+{
+  QuestionViewController *controller = (QuestionViewController *) [self.controllers objectAtIndex: index];
+  [controller fadeInAnswer];
+}
+
 #pragma mark UIScrollViewDelegate
 
 - (void) scrollViewDidScroll: (UIScrollView *) sender 
@@ -146,8 +174,9 @@
   // Switch the indicator when more than 50% of the previous/next page is visible
   CGFloat pageWidth = scrollView.frame.size.width;
   int currentIndex = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
-  
-  if (currentIndex + 1 > [self.questions count] / 2)
+
+  // if the last retrieve attempt succeeded, try to grab some more questions
+  if (lastRetrieveSucceeded && currentIndex + 1 > [self.questions count] - (QUESTIONS_PER_PAGE / 2))
   {
     [self retrieveQuestions];
   }
@@ -156,6 +185,12 @@
   [self loadQuestion: currentIndex - 1];
   [self loadQuestion: currentIndex];
   [self loadQuestion: currentIndex + 1];
+}
+
+- (void) scrollViewDidEndDecelerating: (UIScrollView *) sender
+{
+  int currentIndex = floor(scrollView.contentOffset.x / sender.frame.size.width);
+  [self fadeInAnswer: currentIndex];
 }
 
 @end

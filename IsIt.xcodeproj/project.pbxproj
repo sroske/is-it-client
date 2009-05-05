@@ -17,6 +17,7 @@
 		28D7ACF80DDB3853001CB0EB /* IsItViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* IsItViewController.m */; };
 		A99DA7CB0FAFB8DD00DEC594 /* QuestionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A99DA7CA0FAFB8DD00DEC594 /* QuestionViewController.m */; };
 		A99DA7D60FAFB95A00DEC594 /* QuestionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A99DA7D50FAFB95A00DEC594 /* QuestionViewController.xib */; };
+		A9D0F96C0FAFE63F00E399BF /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D0F96B0FAFE63F00E399BF /* Default.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		A99DA7C90FAFB8DD00DEC594 /* QuestionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionViewController.h; sourceTree = "<group>"; };
 		A99DA7CA0FAFB8DD00DEC594 /* QuestionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionViewController.m; sourceTree = "<group>"; };
 		A99DA7D50FAFB95A00DEC594 /* QuestionViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QuestionViewController.xib; sourceTree = "<group>"; };
+		A9D0F96B0FAFE63F00E399BF /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A9D0F96A0FAFE62F00E399BF /* Images */,
 				2899E5210DE3E06400AC0155 /* IsItViewController.xib */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -113,6 +116,14 @@
 				288765A40DF7441C002DB57D /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A9D0F96A0FAFE62F00E399BF /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				A9D0F96B0FAFE63F00E399BF /* Default.png */,
+			);
+			name = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,6 +171,7 @@
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				2899E5220DE3E06400AC0155 /* IsItViewController.xib in Resources */,
 				A99DA7D60FAFB95A00DEC594 /* QuestionViewController.xib in Resources */,
+				A9D0F96C0FAFE63F00E399BF /* Default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

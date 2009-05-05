@@ -22,5 +22,6 @@
 
 - (id) initWithQuestion: (NSString *) q
               andAnswer: (BOOL) a;
+- (void) fadeInAnswer;
 
 @end
