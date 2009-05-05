@@ -60,11 +60,9 @@
 - (void) viewDidLoad 
 {
   [super viewDidLoad];
-	[self retrieveQuestions];
-	NSLog(@"loaded questions: %@", questions);
-	
-	// hiding the navigation bar
-	self.navigationController.navigationBarHidden = YES;
+  
+  self.questions = [[NSMutableArray alloc] init];
+  [self retrieveQuestions];
 	
   // view controllers are created lazily
   // in the meantime, load the array with placeholders which will be replaced on demand
@@ -72,10 +70,11 @@
   for (unsigned i = 0; i < [self.questions count]; i++) {
     [self.controllers addObject: [NSNull null]];
   }
+  
+  self.navigationController.navigationBarHidden = YES;
 	
   // a page is the width of the scroll view
   scrollView.pagingEnabled = YES;
-  scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * [self.questions count], scrollView.frame.size.height);
   scrollView.showsHorizontalScrollIndicator = NO;
   scrollView.showsVerticalScrollIndicator = NO;
   scrollView.scrollsToTop = NO;
@@ -87,7 +86,7 @@
 
 - (void) retrieveQuestions
 {
-	NSURL *jsonURL = [NSURL URLWithString: @"http://is-it.bitgun.com/random.js"];
+	NSURL *jsonURL = [NSURL URLWithString: @"http://localhost:3000/random.js"];
 	
 	NSString *jsonData = [[NSString alloc] initWithContentsOfURL: jsonURL];	
 	if (jsonData == nil)
@@ -102,7 +101,12 @@
 	}
 	else 
 	{
-		self.questions = [jsonData JSONValue]; 
+    [self.questions addObjectsFromArray: [jsonData JSONValue]];
+    for (unsigned i = 0; i < 30; i++) {
+      [self.controllers addObject: [NSNull null]];
+    }
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * [self.questions count], scrollView.frame.size.height);
+    NSLog(@"added another 30 questions, totalling %i", [self.questions count]);
 	}
 	[jsonData release];	
 }
@@ -142,6 +146,11 @@
   // Switch the indicator when more than 50% of the previous/next page is visible
   CGFloat pageWidth = scrollView.frame.size.width;
   int currentIndex = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
+  
+  if (currentIndex + 1 > [self.questions count] / 2)
+  {
+    [self retrieveQuestions];
+  }
 	
   // load the visible page and the page on either side of it (to avoid flashes when the user starts scrolling)
   [self loadQuestion: currentIndex - 1];
