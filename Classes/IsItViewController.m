@@ -84,11 +84,30 @@
   // and display it
   [self loadQuestion: 0];
   
+  [self setupIndicator];
+  
   // now fetch the other questions from the server
   [NSThread detachNewThreadSelector: @selector(retrieveFirstRunQuestions) 
                            toTarget: self 
                          withObject: nil];
 }
+
+- (void) setupIndicator
+{
+  // add indicator
+  CGRect frame = indicator.frame;
+  frame.origin.x = 320 / 2 - frame.size.width / 2;
+  frame.origin.y = 265;
+  indicator.frame = frame;
+  [scrollView addSubview: indicator];
+  
+  [UIView beginAnimations: @"indicatorFadeIn" context: NULL];
+	[UIView setAnimationDuration: 0.2f];
+	[indicator startAnimating];
+	[UIView commitAnimations];
+}
+
+#pragma mark Question setup and retrieval
 
 - (void) retrieveFirstRunQuestions
 {
@@ -132,6 +151,11 @@
   // in the title screen answer
   if (firstRun)
   {
+    [UIView beginAnimations: @"indicatorFadeOut" context: NULL];
+    [UIView setAnimationDuration: 0.2f];
+    [indicator stopAnimating];
+    [UIView commitAnimations];
+    
     [self loadQuestion: 1];
     [self fadeInAnswer: 0];
   }
@@ -139,7 +163,22 @@
   [pool release];
 }
 
-#pragma mark Question manipulation
+- (void) addLastQuestion
+{
+  [self appendQuestion: @"Is this the last question?" withAnswer: YES];
+}
+
+- (void) appendQuestion: (NSString *) question
+             withAnswer: (BOOL) answer
+{
+  NSArray *keys = [NSArray arrayWithObjects: @"question", @"answer", nil];
+  NSArray *objects = [NSArray arrayWithObjects: question, answer ? @"1" : @"0", nil];
+  [self.questions addObject: [NSDictionary dictionaryWithObjects: objects forKeys: keys]];
+  [self.controllers addObject: [NSNull null]];
+  scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * [self.questions count], scrollView.frame.size.height);
+}
+
+#pragma mark Question view manipulation
 
 - (void) loadQuestion: (int) index
 {
@@ -165,21 +204,6 @@
     controller.view.frame = frame;
     [scrollView addSubview: controller.view];
   }
-}
-
-- (void) addLastQuestion
-{
-  [self appendQuestion: @"Is this the last question?" withAnswer: YES];
-}
-
-- (void) appendQuestion: (NSString *) question
-             withAnswer: (BOOL) answer
-{
-  NSArray *keys = [NSArray arrayWithObjects: @"question", @"answer", nil];
-  NSArray *objects = [NSArray arrayWithObjects: question, answer ? @"1" : @"0", nil];
-  [self.questions addObject: [NSDictionary dictionaryWithObjects: objects forKeys: keys]];
-  [self.controllers addObject: [NSNull null]];
-  scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * [self.questions count], scrollView.frame.size.height);
 }
 
 - (void) fadeInAnswer: (int) index

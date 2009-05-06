@@ -10,6 +10,7 @@
 
 @interface IsItViewController : UIViewController <UIScrollViewDelegate> {
   IBOutlet UIScrollView *scrollView;
+  IBOutlet UIActivityIndicatorView *indicator;
 	NSMutableArray *controllers;
 	NSMutableArray *questions;
   BOOL lastRetrieveSucceeded;
@@ -19,6 +20,7 @@
 @property (nonatomic, retain) NSMutableArray *controllers;
 @property (nonatomic, retain) NSMutableArray *questions;
 
+- (void) setupIndicator;
 - (void) retrieveFirstRunQuestions;
 - (void) retrieveQuestions: (BOOL) firstRun;
 - (void) loadQuestion: (int) index;
