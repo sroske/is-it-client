@@ -9,6 +9,7 @@
 #import <JSON/JSON.h>
 #import "IsItViewController.h"
 #import "QuestionViewController.h"
+#import "NSArray-Shuffle.h"
 
 #define QUESTIONS_PER_PAGE 30
 
@@ -64,16 +65,8 @@
   [super viewDidLoad];
   
   lastRetrieveSucceeded = NO;
-  
-  self.questions = [[NSMutableArray alloc] init];
-  self.controllers = [[NSMutableArray alloc] init];
-  
-  // add our default question
-  [self appendQuestion: @"Is it an App?" withAnswer: YES];
-  
-  // now fetch the questions from the server
-  [self retrieveQuestions];
-  
+  currentPage = 1;
+
   self.navigationController.navigationBarHidden = YES;
 	
   // a page is the width of the scroll view
@@ -82,17 +75,33 @@
   scrollView.showsVerticalScrollIndicator = NO;
   scrollView.scrollsToTop = NO;
   scrollView.delegate = self;
-	
-  [self loadQuestion: 0];
-  [self loadQuestion: 1];
   
-  [self fadeInAnswer: 0];
+  self.questions = [[NSMutableArray alloc] init];
+  self.controllers = [[NSMutableArray alloc] init];
+  
+  // add our default question (as it acts as the title screen)
+  [self appendQuestion: @"Is it an App?" withAnswer: YES];
+  // and display it
+  [self loadQuestion: 0];
+  
+  // now fetch the other questions from the server
+  [NSThread detachNewThreadSelector: @selector(retrieveFirstRunQuestions) 
+                           toTarget: self 
+                         withObject: nil];
 }
 
-- (void) retrieveQuestions
+- (void) retrieveFirstRunQuestions
 {
-	NSURL *jsonURL = [NSURL URLWithString: @"http://is-it.bitgun.com/random.js"];
-	
+  [self retrieveQuestions: YES];
+}
+
+- (void) retrieveQuestions: (BOOL) firstRun
+{
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+  
+	NSURL *jsonURL = [NSURL URLWithString: [NSString stringWithFormat: @"http://is-it.bitgun.com/questions/random/%i.js", 
+                                          currentPage, nil]];
+	NSLog(@"fetching %@", jsonURL);
 	NSString *jsonData = [[NSString alloc] initWithContentsOfURL: jsonURL];	
 	if (jsonData == nil)
 	{
@@ -101,7 +110,7 @@
 	}
 	else 
 	{
-    NSMutableArray *fetched = [jsonData JSONValue];
+    NSArray *fetched = [[jsonData JSONValue] shuffledArray];
     [self.questions addObjectsFromArray: fetched];
     for (unsigned i = 0; i < [fetched count]; i++) {
       [self.controllers addObject: [NSNull null]];
@@ -114,8 +123,20 @@
     scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * [self.questions count], scrollView.frame.size.height);
     NSLog(@"added another 30 questions, total: %i", [self.questions count]);
     lastRetrieveSucceeded = YES;
+    currentPage += 1;
 	}
 	[jsonData release];	
+  
+  // if this is the first time we retrieved these questions,
+  // we need to lead the first non-title screen question and fade
+  // in the title screen answer
+  if (firstRun)
+  {
+    [self loadQuestion: 1];
+    [self fadeInAnswer: 0];
+  }
+  
+  [pool release];
 }
 
 #pragma mark Question manipulation
@@ -178,7 +199,7 @@
   // if the last retrieve attempt succeeded, try to grab some more questions
   if (lastRetrieveSucceeded && currentIndex + 1 > [self.questions count] - (QUESTIONS_PER_PAGE / 2))
   {
-    [self retrieveQuestions];
+    [self retrieveQuestions: NO];
   }
 	
   // load the visible page and the page on either side of it (to avoid flashes when the user starts scrolling)

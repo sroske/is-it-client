@@ -13,12 +13,14 @@
 	NSMutableArray *controllers;
 	NSMutableArray *questions;
   BOOL lastRetrieveSucceeded;
+  int currentPage;
 }
 
 @property (nonatomic, retain) NSMutableArray *controllers;
 @property (nonatomic, retain) NSMutableArray *questions;
 
-- (void) retrieveQuestions;
+- (void) retrieveFirstRunQuestions;
+- (void) retrieveQuestions: (BOOL) firstRun;
 - (void) loadQuestion: (int) index;
 - (void) fadeInAnswer: (int) index;
 - (void) addLastQuestion;
