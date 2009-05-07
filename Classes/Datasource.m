@@ -14,8 +14,8 @@
 #define QUESTIONS_PER_PAGE 30
 
 //#define QUESTIONS_URL @"http://google.com/%i"
-//#define QUESTIONS_URL @"http://localhost:3000/questions/random/%i.js"
-#define QUESTIONS_URL @"http://isitanapp.com/questions/random/%i.js"
+#define QUESTIONS_URL @"http://localhost:3000/questions/random/%i.js"
+//#define QUESTIONS_URL @"http://isitanapp.com/questions/random/%i.js"
 
 @interface Datasource (Private)
 
@@ -70,8 +70,8 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
 {
   if (!lastRetrieveSucceeded) return lastRetrieveSucceeded;
 
-	NSURL *jsonURL = [NSURL URLWithString: [NSString stringWithFormat: QUESTIONS_URL, 
-                                          currentPage, nil]];
+	NSURL *jsonURL = [[NSURL URLWithString: [NSString stringWithFormat: QUESTIONS_URL, 
+                                          currentPage, nil]] autorelease];
 	NSLog(@"fetching %@", jsonURL);
 	NSString *jsonData = [[NSString alloc] initWithContentsOfURL: jsonURL];	
 	if (jsonData == nil)
