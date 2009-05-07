@@ -10,7 +10,7 @@
 #import "QuestionViewController.h"
 #import "Datasource.h"
 
-#define QUESTIONS_REMAINING_PADDING 15
+#define QUESTIONS_PER_PAGE 30
 
 @implementation IsItViewController
 
@@ -231,11 +231,12 @@
   
   [nextQuestion fadeOutAnswer];
   [currentQuestion fadeInAnswer];
-  
-  NSLog(@"currentQuestion.questionIndex: %i", currentQuestion.questionIndex);
+
   // if the last retrieve attempt succeeded, and we need more question try to grab some more
-  if (lastRetrieveSucceeded && currentQuestion.questionIndex + 1 > 
-      [[Datasource sharedDatasource] questionCount] - QUESTIONS_REMAINING_PADDING)
+  // TODO, THIS NEEDS TO BE CLEANED UP
+  if ([[Datasource sharedDatasource] questionCount] > QUESTIONS_PER_PAGE && 
+      lastRetrieveSucceeded && 
+      currentQuestion.questionIndex + 1 > [[Datasource sharedDatasource] questionCount] - (QUESTIONS_PER_PAGE / 2))
   {
     [NSThread detachNewThreadSelector: @selector(retrieveAdditionalQuestions) 
                              toTarget: self 

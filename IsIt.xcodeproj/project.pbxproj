@@ -45,8 +45,8 @@
 		A9C781B60FB29769001FF0ED /* Datasource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Datasource.m; sourceTree = "<group>"; };
 		A9C781BA0FB29787001FF0ED /* SynthesizeSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynthesizeSingleton.h; sourceTree = "<group>"; };
 		A9D0F96B0FAFE63F00E399BF /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		A9D8C8160FB12876006E59EF /* NSArray-Shuffle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray-Shuffle.h"; sourceTree = "<group>"; };
-		A9D8C8170FB12876006E59EF /* NSArray-Shuffle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray-Shuffle.m"; sourceTree = "<group>"; };
+		A9D8C8160FB12876006E59EF /* NSArray-Shuffle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray-Shuffle.h"; path = "Classes/NSArray-Shuffle.h"; sourceTree = "<group>"; };
+		A9D8C8170FB12876006E59EF /* NSArray-Shuffle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSArray-Shuffle.m"; path = "Classes/NSArray-Shuffle.m"; sourceTree = "<group>"; };
 		A9FCC33A0FB0914B00FB7A02 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		A9FCC3420FB0919600FB7A02 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -74,8 +74,6 @@
 				28D7ACF70DDB3853001CB0EB /* IsItViewController.m */,
 				A99DA7C90FAFB8DD00DEC594 /* QuestionViewController.h */,
 				A99DA7CA0FAFB8DD00DEC594 /* QuestionViewController.m */,
-				A9D8C8160FB12876006E59EF /* NSArray-Shuffle.h */,
-				A9D8C8170FB12876006E59EF /* NSArray-Shuffle.m */,
 				A9C781B50FB29769001FF0ED /* Datasource.h */,
 				A9C781B60FB29769001FF0ED /* Datasource.m */,
 			);
@@ -105,6 +103,8 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				A9D8C8160FB12876006E59EF /* NSArray-Shuffle.h */,
+				A9D8C8170FB12876006E59EF /* NSArray-Shuffle.m */,
 				A9C781BA0FB29787001FF0ED /* SynthesizeSingleton.h */,
 				32CA4F630368D1EE00C91783 /* IsIt_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
