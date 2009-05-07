@@ -10,8 +10,6 @@
 #import "QuestionViewController.h"
 #import "Datasource.h"
 
-#define QUESTIONS_PER_PAGE 30
-
 @implementation IsItViewController
 
 /*
@@ -60,8 +58,6 @@
 
 - (void) viewDidLoad
 {
-  lastRetrieveSucceeded = NO;
-  
 	currentQuestion = [[QuestionViewController alloc] init];
 	nextQuestion = [[QuestionViewController alloc] init];
   
@@ -127,7 +123,7 @@
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   
-  lastRetrieveSucceeded = [[Datasource sharedDatasource] retrieveMoreQuestions];
+  [[Datasource sharedDatasource] retrieveMoreQuestions];
   
   // resize the scrollview's content as needed
   NSInteger widthCount = [[Datasource sharedDatasource] questionCount];
@@ -232,11 +228,11 @@
   [nextQuestion fadeOutAnswer];
   [currentQuestion fadeInAnswer];
 
-  // if the last retrieve attempt succeeded, and we need more question try to grab some more
-  // TODO, THIS NEEDS TO BE CLEANED UP
-  if ([[Datasource sharedDatasource] questionCount] > QUESTIONS_PER_PAGE && 
-      lastRetrieveSucceeded && 
-      currentQuestion.questionIndex + 1 > [[Datasource sharedDatasource] questionCount] - (QUESTIONS_PER_PAGE / 2))
+  // if we already have more than a page's worth of questions (which leads us to believe there are even more to be gotten)
+  // and we have less than half a page's worth left, go fetch some more
+  NSInteger questionsPerPage = [[Datasource sharedDatasource] questionsCountPerPage];
+  if ([[Datasource sharedDatasource] questionCount] > questionsPerPage && 
+      currentQuestion.questionIndex + 1 > [[Datasource sharedDatasource] questionCount] - (questionsPerPage / 2))
   {
     [NSThread detachNewThreadSelector: @selector(retrieveAdditionalQuestions) 
                              toTarget: self 

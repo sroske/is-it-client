@@ -12,10 +12,14 @@
 #import "NSArray-Shuffle.h"
 
 #define QUESTIONS_PER_PAGE 30
-#define QUESTIONS_URL @"http://isitanapp.com/questions/random/%i.js"
+
+#define QUESTIONS_URL @"http://google.com/%i"
+//#define QUESTIONS_URL @"http://localhost:3000/questions/random/%i.js"
+//#define QUESTIONS_URL @"http://isitanapp.com/questions/random/%i.js"
 
 @interface Datasource (Private)
 
+- (void) appendStaticQuestions;
 - (void) appendLastQuestion;
 - (void) appendQuestion: (NSString *) question
              withAnswer: (BOOL) answer;
@@ -31,6 +35,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
 	self = [super init];
 	if (self != nil)
 	{
+    appendedLastQuestion = NO;
     lastRetrieveSucceeded = YES;
     currentPage = 1;
     questions = [[NSMutableArray alloc] init];
@@ -43,6 +48,12 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
 {
   [questions release];
   [super dealloc];
+}
+
+// exposing this for the DS consumers' benefit
+- (NSInteger) questionsCountPerPage
+{
+  return QUESTIONS_PER_PAGE;
 }
 
 - (NSInteger) questionCount
@@ -65,6 +76,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
 	NSString *jsonData = [[NSString alloc] initWithContentsOfURL: jsonURL];	
 	if (jsonData == nil)
 	{
+    [self appendStaticQuestions];
     [self appendLastQuestion];
     lastRetrieveSucceeded = NO;
 	}
@@ -92,10 +104,18 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
 }
 
 #pragma mark Private
+    
+- (void) appendStaticQuestions
+{
+  [self appendQuestion: @"Is it Christmas?" withAnswer: NO];
+  [self appendQuestion: @"Is it Easter?" withAnswer: NO];
+}
 
 - (void) appendLastQuestion
 {
+  if (appendedLastQuestion) return;
   [self appendQuestion: @"Is this the last question?" withAnswer: YES];
+  appendedLastQuestion = YES;
 }
 
 - (void) appendQuestion: (NSString *) question

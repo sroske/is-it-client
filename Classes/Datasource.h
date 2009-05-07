@@ -11,11 +11,13 @@
 @interface Datasource : NSObject {
   NSMutableArray *questions;
   BOOL lastRetrieveSucceeded;
+  BOOL appendedLastQuestion;
   int currentPage;
 }
 
 + (Datasource *) sharedDatasource;
 
+- (NSInteger) questionsCountPerPage;
 - (NSInteger) questionCount;
 - (NSDictionary *) dataForQuestion: (NSInteger) index;
 

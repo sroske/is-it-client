@@ -12,9 +12,9 @@
 @interface IsItViewController : UIViewController <UIScrollViewDelegate> {
   IBOutlet UIScrollView *scrollView;
   IBOutlet UIActivityIndicatorView *indicator;
+  
 	QuestionViewController *currentQuestion;
 	QuestionViewController *nextQuestion;
-  BOOL lastRetrieveSucceeded;
 }
 
 - (void) setupIndicator;
