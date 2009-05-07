@@ -6,16 +6,13 @@
 //  Copyright Bitgun 2009. All rights reserved.
 //
 
-#import <JSON/JSON.h>
 #import "IsItViewController.h"
 #import "QuestionViewController.h"
-#import "NSArray-Shuffle.h"
+#import "Datasource.h"
 
-#define QUESTIONS_PER_PAGE 30
+#define QUESTIONS_REMAINING_PADDING 15
 
 @implementation IsItViewController
-
-@synthesize questions, controllers;
 
 /*
  // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -43,54 +40,49 @@
 	// Releases the view if it doesn't have a superview.
   [super didReceiveMemoryWarning];
 	
-	// Release any cached data, images, etc that aren't in use.
+  [[Datasource sharedDatasource] cleanupOldQuestions];
 }
 
-- (void)viewDidUnload {
-	[self.controllers release];
-	[self.questions release];
+- (void) viewDidUnload 
+{
+  [currentQuestion release];
+  [nextQuestion release];
 }
 
-
+/*
 - (void) dealloc 
 {
   [super dealloc];
 }
+*/
 
 #pragma mark initialization
 
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void) viewDidLoad 
+- (void) viewDidLoad
 {
-  [super viewDidLoad];
-  
   lastRetrieveSucceeded = NO;
-  currentPage = 1;
-
-  self.navigationController.navigationBarHidden = YES;
-	
-  // a page is the width of the scroll view
-  scrollView.pagingEnabled = YES;
-  scrollView.showsHorizontalScrollIndicator = NO;
-  scrollView.showsVerticalScrollIndicator = NO;
-  scrollView.scrollsToTop = NO;
-  scrollView.delegate = self;
   
-  self.questions = [[NSMutableArray alloc] init];
-  self.controllers = [[NSMutableArray alloc] init];
+	currentQuestion = [[QuestionViewController alloc] init];
+	nextQuestion = [[QuestionViewController alloc] init];
   
-  // add our default question (as it acts as the title screen)
-  [self appendQuestion: @"Is it an App?" withAnswer: YES];
-  // and display it
-  [self loadQuestion: 0];
+	[scrollView addSubview: currentQuestion.view];
+	[scrollView addSubview: nextQuestion.view];
+  
+  scrollView.contentOffset = CGPointMake(0, 0);
+  
+  // set up the title screen as the first question
+  [self applyNewIndex: 0 questionController: currentQuestion];
+  [self applyNewIndex: 1 questionController: nextQuestion];
   
   [self setupIndicator];
-  
+
   // now fetch the other questions from the server
   [NSThread detachNewThreadSelector: @selector(retrieveFirstRunQuestions) 
                            toTarget: self 
                          withObject: nil];
 }
+
+#pragma mark Loading indicator
 
 - (void) setupIndicator
 {
@@ -100,11 +92,23 @@
   frame.origin.y = 265;
   indicator.frame = frame;
   [scrollView addSubview: indicator];
-  
+  [self startIndicating];
+}
+
+- (void) startIndicating
+{
   [UIView beginAnimations: @"indicatorFadeIn" context: NULL];
 	[UIView setAnimationDuration: 0.2f];
 	[indicator startAnimating];
 	[UIView commitAnimations];
+}
+
+- (void) stopIndicating
+{
+  [UIView beginAnimations: @"indicatorFadeOut" context: NULL];
+  [UIView setAnimationDuration: 0.2f];
+  [indicator stopAnimating];
+  [UIView commitAnimations];
 }
 
 #pragma mark Question setup and retrieval
@@ -114,128 +118,129 @@
   [self retrieveQuestions: YES];
 }
 
+- (void) retrieveAdditionalQuestions
+{
+  [self retrieveQuestions: NO];
+}
+
 - (void) retrieveQuestions: (BOOL) firstRun
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   
-	NSURL *jsonURL = [NSURL URLWithString: [NSString stringWithFormat: @"http://is-it.bitgun.com/questions/random/%i.js", 
-                                          currentPage, nil]];
-	NSLog(@"fetching %@", jsonURL);
-	NSString *jsonData = [[NSString alloc] initWithContentsOfURL: jsonURL];	
-	if (jsonData == nil)
-	{
-    [self addLastQuestion];
-    lastRetrieveSucceeded = NO;
-	}
-	else 
-	{
-    NSArray *fetched = [[jsonData JSONValue] shuffledArray];
-    [self.questions addObjectsFromArray: fetched];
-    for (unsigned i = 0; i < [fetched count]; i++) {
-      [self.controllers addObject: [NSNull null]];
-    }
-    // if we received less than a whole pages worth of questions, add the last question
-    if ([fetched count] < QUESTIONS_PER_PAGE)
-    {
-      [self addLastQuestion];
-    }
-    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * [self.questions count], scrollView.frame.size.height);
-    NSLog(@"added another 30 questions, total: %i", [self.questions count]);
-    lastRetrieveSucceeded = YES;
-    currentPage += 1;
-	}
-	[jsonData release];	
+  lastRetrieveSucceeded = [[Datasource sharedDatasource] retrieveMoreQuestions];
   
+  // resize the scrollview's content as needed
+  NSInteger widthCount = [[Datasource sharedDatasource] questionCount];
+	if (widthCount == 0) widthCount = 1;
+	
+  scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * widthCount, 
+                                      scrollView.frame.size.height);
+
   // if this is the first time we retrieved these questions,
-  // we need to lead the first non-title screen question and fade
+  // we need to load the first non-title screen question and fade
   // in the title screen answer
   if (firstRun)
   {
-    [UIView beginAnimations: @"indicatorFadeOut" context: NULL];
-    [UIView setAnimationDuration: 0.2f];
-    [indicator stopAnimating];
-    [UIView commitAnimations];
-    
-    [self loadQuestion: 1];
-    [self fadeInAnswer: 0];
+    [self stopIndicating];
+    [self applyNewIndex: 1 questionController: nextQuestion];
+    [currentQuestion fadeInAnswer];
   }
   
   [pool release];
 }
 
-- (void) addLastQuestion
-{
-  [self appendQuestion: @"Is this the last question?" withAnswer: YES];
-}
-
-- (void) appendQuestion: (NSString *) question
-             withAnswer: (BOOL) answer
-{
-  NSArray *keys = [NSArray arrayWithObjects: @"question", @"answer", nil];
-  NSArray *objects = [NSArray arrayWithObjects: question, answer ? @"1" : @"0", nil];
-  [self.questions addObject: [NSDictionary dictionaryWithObjects: objects forKeys: keys]];
-  [self.controllers addObject: [NSNull null]];
-  scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * [self.questions count], scrollView.frame.size.height);
-}
-
 #pragma mark Question view manipulation
 
-- (void) loadQuestion: (int) index
+- (void) applyNewIndex: (NSInteger) newIndex 
+    questionController: (QuestionViewController *) questionController
 {
-  if (index < 0) return;
-  if (index >= [self.questions count]) return;
-	
-  // replace the placeholder if necessary
-  QuestionViewController *controller = (QuestionViewController *) [self.controllers objectAtIndex: index];
-  if ((NSNull *) controller == [NSNull null]) 
+	NSInteger questionCount = [[Datasource sharedDatasource] questionCount];
+	BOOL outOfBounds = newIndex >= questionCount || newIndex < 0;
+  
+	if (!outOfBounds)
 	{
-		NSDictionary *itemAtIndex = (NSDictionary *) [self.questions objectAtIndex: index];
-    controller = [[QuestionViewController alloc] initWithQuestion: [itemAtIndex objectForKey: @"question"] 
-                                                        andAnswer: [[itemAtIndex objectForKey: @"answer"] boolValue]];
-    [self.controllers replaceObjectAtIndex: index withObject: controller];
-    [controller release];
-  }
-	
-  // add the controller's view to the scroll view
-  if (controller.view.superview == nil) {
-    CGRect frame = scrollView.frame;
-    frame.origin.x = frame.size.width * index;
-    frame.origin.y = 0;
-    controller.view.frame = frame;
-    [scrollView addSubview: controller.view];
-  }
-}
-
-- (void) fadeInAnswer: (int) index
-{
-  QuestionViewController *controller = (QuestionViewController *) [self.controllers objectAtIndex: index];
-  [controller fadeInAnswer];
+		CGRect questionFrame = questionController.view.frame;
+		questionFrame.origin.y = 0;
+		questionFrame.origin.x = scrollView.frame.size.width * newIndex;
+		questionController.view.frame = questionFrame;
+	}
+	else
+	{
+		CGRect questionFrame = questionController.view.frame;
+		questionFrame.origin.y = scrollView.frame.size.height;
+		questionController.view.frame = questionFrame;
+	}
+  
+	questionController.questionIndex = newIndex;
 }
 
 #pragma mark UIScrollViewDelegate
 
-- (void) scrollViewDidScroll: (UIScrollView *) sender 
+- (void) scrollViewDidScroll: (UIScrollView *) sender
 {
-  // Switch the indicator when more than 50% of the previous/next page is visible
   CGFloat pageWidth = scrollView.frame.size.width;
-  int currentIndex = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
-
-  // if the last retrieve attempt succeeded, try to grab some more questions
-  if (lastRetrieveSucceeded && currentIndex + 1 > [self.questions count] - (QUESTIONS_PER_PAGE / 2))
-  {
-    [self retrieveQuestions: NO];
-  }
+  float fractionalPage = scrollView.contentOffset.x / pageWidth;
 	
-  // load the visible page and the page on either side of it (to avoid flashes when the user starts scrolling)
-  [self loadQuestion: currentIndex - 1];
-  [self loadQuestion: currentIndex];
-  [self loadQuestion: currentIndex + 1];
+	NSInteger lowerNumber = floor(fractionalPage);
+	NSInteger upperNumber = lowerNumber + 1;
+	
+	if (lowerNumber == currentQuestion.questionIndex)
+	{
+		if (upperNumber != nextQuestion.questionIndex)
+		{
+			[self applyNewIndex: upperNumber questionController: nextQuestion];
+		}
+	}
+	else if (upperNumber == currentQuestion.questionIndex)
+	{
+		if (lowerNumber != nextQuestion.questionIndex)
+		{
+			[self applyNewIndex: lowerNumber questionController: nextQuestion];
+		}
+	}
+	else
+	{
+		if (lowerNumber == nextQuestion.questionIndex)
+		{
+			[self applyNewIndex: upperNumber questionController: currentQuestion];
+		}
+		else if (upperNumber == nextQuestion.questionIndex)
+		{
+			[self applyNewIndex: lowerNumber questionController: currentQuestion];
+		}
+		else
+		{
+			[self applyNewIndex: lowerNumber questionController: currentQuestion];
+			[self applyNewIndex: upperNumber questionController: nextQuestion];
+		}
+	}
 }
 
 - (void) scrollViewDidEndDecelerating: (UIScrollView *) sender
 {
-  int currentIndex = floor(scrollView.contentOffset.x / sender.frame.size.width);
-  [self fadeInAnswer: currentIndex];
+  CGFloat pageWidth = scrollView.frame.size.width;
+  float fractionalPage = scrollView.contentOffset.x / pageWidth;
+	NSInteger nearestNumber = lround(fractionalPage);
+  
+	if (currentQuestion.questionIndex != nearestNumber)
+	{
+		QuestionViewController *swapController = currentQuestion;
+		currentQuestion = nextQuestion;
+		nextQuestion = swapController;
+	}
+  
+  [nextQuestion fadeOutAnswer];
+  [currentQuestion fadeInAnswer];
+  
+  NSLog(@"currentQuestion.questionIndex: %i", currentQuestion.questionIndex);
+  // if the last retrieve attempt succeeded, and we need more question try to grab some more
+  if (lastRetrieveSucceeded && currentQuestion.questionIndex + 1 > 
+      [[Datasource sharedDatasource] questionCount] - QUESTIONS_REMAINING_PADDING)
+  {
+    [NSThread detachNewThreadSelector: @selector(retrieveAdditionalQuestions) 
+                             toTarget: self 
+                           withObject: nil];
+  }
 }
 
 @end

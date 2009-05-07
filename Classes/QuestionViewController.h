@@ -12,16 +12,13 @@
 @interface QuestionViewController : UIViewController {
 	IBOutlet UILabel *questionLabel;
 	IBOutlet UILabel *answerLabel;
-	
-	NSString *question;
-	NSString *answer;
+
+  NSInteger questionIndex;
 }
 
-@property (nonatomic, retain) NSString *question;
-@property (nonatomic, retain) NSString *answer;
+@property NSInteger questionIndex;
 
-- (id) initWithQuestion: (NSString *) q
-              andAnswer: (BOOL) a;
+- (void) fadeOutAnswer;
 - (void) fadeInAnswer;
 
 @end

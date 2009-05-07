@@ -7,21 +7,26 @@
 //
 
 #import "QuestionViewController.h"
-
+#import "Datasource.h"
 
 @implementation QuestionViewController
 
-@synthesize question, answer;
+@synthesize questionIndex;
 
-- (id) initWithQuestion: (NSString *) q
-              andAnswer: (BOOL) a 
+- (void) setQuestionIndex: (NSInteger) newQuestionIndex
 {
-  if (self = [super initWithNibName: @"QuestionViewController" bundle: nil]) 
-  {
-		self.question =	q;
-		self.answer = a ? @"YES" : @"NO";
-  }
-  return self;
+	questionIndex = newQuestionIndex;
+	if (questionIndex >= 0 && questionIndex < [[Datasource sharedDatasource] questionCount])
+	{
+		NSDictionary *questionData = [[Datasource sharedDatasource] dataForQuestion: questionIndex];
+		questionLabel.text = [questionData objectForKey: @"question"];
+		answerLabel.text = [[questionData objectForKey: @"answer"] boolValue] == YES ? @"YES" : @"NO";
+	}
+}
+
+- (void) fadeOutAnswer
+{ 
+	[answerLabel setAlpha: 0];
 }
 
 - (void) fadeInAnswer
@@ -52,13 +57,13 @@
 }
 */
 
+/*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void) viewDidLoad 
 {
-  [questionLabel setText: self.question];
-	[answerLabel setText: self.answer];
   [super viewDidLoad];
 }
+*/
 
 /*
 // Override to allow orientations other than the default portrait orientation.

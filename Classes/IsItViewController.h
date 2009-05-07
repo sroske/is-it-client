@@ -7,27 +7,26 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "QuestionViewController.h"
 
 @interface IsItViewController : UIViewController <UIScrollViewDelegate> {
   IBOutlet UIScrollView *scrollView;
   IBOutlet UIActivityIndicatorView *indicator;
-	NSMutableArray *controllers;
-	NSMutableArray *questions;
+	QuestionViewController *currentQuestion;
+	QuestionViewController *nextQuestion;
   BOOL lastRetrieveSucceeded;
-  int currentPage;
 }
 
-@property (nonatomic, retain) NSMutableArray *controllers;
-@property (nonatomic, retain) NSMutableArray *questions;
-
 - (void) setupIndicator;
+- (void) startIndicating;
+- (void) stopIndicating;
+
 - (void) retrieveFirstRunQuestions;
+- (void) retrieveAdditionalQuestions;
 - (void) retrieveQuestions: (BOOL) firstRun;
-- (void) loadQuestion: (int) index;
-- (void) fadeInAnswer: (int) index;
-- (void) addLastQuestion;
-- (void) appendQuestion: (NSString *) question
-             withAnswer: (BOOL) answer;
+
+- (void) applyNewIndex: (NSInteger) newIndex 
+    questionController: (QuestionViewController *) questionController;
 
 @end
 
