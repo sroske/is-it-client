@@ -14,8 +14,8 @@
 #define QUESTIONS_PER_PAGE 30
 
 //#define QUESTIONS_URL @"http://google.com/%i"
-#define QUESTIONS_URL @"http://localhost:3000/questions/random/%i.js"
-//#define QUESTIONS_URL @"http://isitanapp.com/questions/random/%i.js"
+//#define QUESTIONS_URL @"http://localhost:3000/questions/random/%i.js"
+#define QUESTIONS_URL @"http://isitanapp.com/questions/random/%i.js"
 
 @interface Datasource (Private)
 
