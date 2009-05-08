@@ -289,7 +289,7 @@
 					"-ljson",
 				);
 				PREBINDING = NO;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BFEE0F98-5832-4903-8896-BC9E9C60441C";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C43ECA8C-D6C5-418F-B068-B7C2B3BE6938";
 				SDKROOT = iphoneos2.2.1;
 			};
 			name = Debug;

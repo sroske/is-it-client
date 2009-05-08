@@ -70,8 +70,8 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
 {
   if (!lastRetrieveSucceeded) return lastRetrieveSucceeded;
 
-	NSURL *jsonURL = [[NSURL URLWithString: [NSString stringWithFormat: QUESTIONS_URL, 
-                                          currentPage, nil]] autorelease];
+	NSURL *jsonURL = [NSURL URLWithString: [NSString stringWithFormat: QUESTIONS_URL, 
+                                          currentPage, nil]];
 	NSLog(@"fetching %@", jsonURL);
 	NSString *jsonData = [[NSString alloc] initWithContentsOfURL: jsonURL];	
 	if (jsonData == nil)
