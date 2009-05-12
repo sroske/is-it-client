@@ -60,9 +60,9 @@
     [self.view addSubview:questionLabel];
     [questionLabel release];
     
-    answerLabel = [[FontLabel alloc] initWithPoint:CGPointMake(160, 190) 
+    answerLabel = [[FontLabel alloc] initWithPoint:CGPointMake(160, 200) 
                                                 name:@"MyriadPro-Bold" 
-                                                size:48.0f 
+                                                size:72.0f 
                                                color:[UIColor blackColor] 
                                            autoframe:YES];
     [answerLabel setJustify: kCenter];

@@ -143,9 +143,10 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
 - (void) appendQuestion: (NSString *) question
              withAnswer: (BOOL) answer
 {
-  NSArray *keys = [NSArray arrayWithObjects: @"question", @"answer", nil];
-  NSArray *objects = [NSArray arrayWithObjects: question, answer ? @"1" : @"0", nil];
-  [questions addObject: [NSDictionary dictionaryWithObjects: objects forKeys: keys]];
+    NSArray *keys = [NSArray arrayWithObjects: @"question", @"answer", nil];
+    NSArray *objects = [NSArray arrayWithObjects: question, answer ? @"1" : @"0", nil];
+    [questions addObject: [NSDictionary dictionaryWithObjects: objects forKeys: keys]];
+    [displayedStates addObject: [NSNumber numberWithInteger: 0]];
 }
 
 @end

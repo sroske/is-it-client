@@ -21,9 +21,8 @@
 - (void) startIndicating;
 - (void) stopIndicating;
 
-- (void) retrieveFirstRunQuestions;
-- (void) retrieveAdditionalQuestions;
 - (void) retrieveQuestions: (BOOL) firstRun;
+- (void) completedRetrieval: (BOOL) firstRun;
 
 - (void) applyNewIndex: (NSInteger) newIndex 
     questionController: (QuestionViewController *) questionController;
