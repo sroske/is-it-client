@@ -7,18 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "FontLabel.h"
 
 @interface QuestionViewController : UIViewController {
-	IBOutlet UILabel *questionLabel;
-	IBOutlet UILabel *answerLabel;
-
-  NSInteger questionIndex;
+    FontLabel *questionLabel;
+    FontLabel *answerLabel;
+    NSInteger questionIndex;
 }
 
 @property NSInteger questionIndex;
 
-- (void) fadeOutAnswer;
 - (void) fadeInAnswer;
+- (void) answerFadedIn: (NSString *) animationID
+              finished: (BOOL) finished
+               context: (void *) context;
 
 @end

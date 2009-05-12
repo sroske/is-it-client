@@ -35,19 +35,21 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
 	self = [super init];
 	if (self != nil)
 	{
-    appendedLastQuestion = NO;
-    lastRetrieveSucceeded = YES;
-    currentPage = 1;
-    questions = [[NSMutableArray alloc] init];
-    [self appendQuestion: @"Is it an App?" withAnswer: YES];
+        appendedLastQuestion = NO;
+        lastRetrieveSucceeded = YES;
+        currentPage = 1;
+        displayedStates = [[NSMutableArray alloc] init];
+        questions = [[NSMutableArray alloc] init];
+        [self appendQuestion: @"Is it an App?" withAnswer: YES];
 	}
 	return self;
 }
 
 - (void) dealloc
 {
-  [questions release];
-  [super dealloc];
+    [displayedStates release];
+    [questions release];
+    [super dealloc];
 }
 
 // exposing this for the DS consumers' benefit
@@ -76,26 +78,46 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
 	NSString *jsonData = [[NSString alloc] initWithContentsOfURL: jsonURL];	
 	if (jsonData == nil)
 	{
-    [self appendStaticQuestions];
-    [self appendLastQuestion];
-    lastRetrieveSucceeded = NO;
+        [self appendStaticQuestions];
+        [self appendLastQuestion];
+        lastRetrieveSucceeded = NO;
 	}
 	else 
 	{
-    NSArray *fetched = [[jsonData JSONValue] shuffledArray];
-    [questions addObjectsFromArray: fetched];
-    // if we received less than a whole pages worth of questions, add the last question
-    if ([fetched count] < QUESTIONS_PER_PAGE)
-    {
-      [self appendLastQuestion];
-    }
-    NSLog(@"added another %i questions, total: %i", [fetched count], [questions count]);
-    lastRetrieveSucceeded = YES;
-    currentPage += 1;
+        NSArray *fetched = [[jsonData JSONValue] shuffledArray];
+        [questions addObjectsFromArray: fetched];
+        for (int i = 0; i < [fetched count]; i++)
+        {
+            [displayedStates addObject: [NSNumber numberWithInteger: 0]];
+        }
+        // if we received less than a whole pages worth of questions, add the last question
+        if ([fetched count] < QUESTIONS_PER_PAGE)
+        {
+          [self appendLastQuestion];
+        }
+        NSLog(@"added another %i questions, total: %i", [fetched count], [questions count]);
+        lastRetrieveSucceeded = YES;
+        currentPage += 1;
 	}
 	[jsonData release];	
   
   return lastRetrieveSucceeded;
+}
+
+- (BOOL) displayedYet: (NSInteger) index
+{
+    if (index >= 0 && index < [displayedStates count])
+    {
+        return [[displayedStates objectAtIndex: index] intValue] == 1;        
+    }
+    return NO;
+}
+- (void) setHasBeenDisplayed: (NSInteger) index
+{
+    if (index >= 0 && index < [displayedStates count])
+    {
+        [displayedStates replaceObjectAtIndex: index withObject: [NSNumber numberWithInteger: 1]];
+    }    
 }
 
 - (void) cleanupOldQuestions

@@ -30,15 +30,15 @@
 
 - (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation 
 {
-	// Return YES for supported orientations
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 - (void)didReceiveMemoryWarning {
-	// Releases the view if it doesn't have a superview.
-  [super didReceiveMemoryWarning];
-	
-  [[Datasource sharedDatasource] cleanupOldQuestions];
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+
+    [[Datasource sharedDatasource] cleanupOldQuestions];
 }
 
 - (void) viewDidUnload 
@@ -64,16 +64,16 @@
 	[scrollView addSubview: currentQuestion.view];
 	[scrollView addSubview: nextQuestion.view];
   
-  scrollView.contentOffset = CGPointMake(0, 0);
-  
-  // set up the title screen as the first question
-  [self applyNewIndex: 0 questionController: currentQuestion];
-  [self applyNewIndex: 1 questionController: nextQuestion];
-  
-  [self setupIndicator];
+    scrollView.contentOffset = CGPointMake(0, 0);
 
-  // now fetch the other questions from the server
-  [NSThread detachNewThreadSelector: @selector(retrieveFirstRunQuestions) 
+    // set up the title screen as the first question
+    [self applyNewIndex: 0 questionController: currentQuestion];
+    [self applyNewIndex: 1 questionController: nextQuestion];
+
+    [self setupIndicator];
+
+    // now fetch the other questions from the server
+    [NSThread detachNewThreadSelector: @selector(retrieveFirstRunQuestions) 
                            toTarget: self 
                          withObject: nil];
 }
@@ -85,7 +85,7 @@
   // add indicator
   CGRect frame = indicator.frame;
   frame.origin.x = 320 / 2 - frame.size.width / 2;
-  frame.origin.y = 265;
+  frame.origin.y = 208;
   indicator.frame = frame;
   [scrollView addSubview: indicator];
   [self startIndicating];
@@ -121,28 +121,28 @@
 
 - (void) retrieveQuestions: (BOOL) firstRun
 {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  
-  [[Datasource sharedDatasource] retrieveMoreQuestions];
-  
-  // resize the scrollview's content as needed
-  NSInteger widthCount = [[Datasource sharedDatasource] questionCount];
-	if (widthCount == 0) widthCount = 1;
-	
-  scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * widthCount, 
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+    [[Datasource sharedDatasource] retrieveMoreQuestions];
+
+    // resize the scrollview's content as needed
+    NSInteger widthCount = [[Datasource sharedDatasource] questionCount];
+    if (widthCount == 0) widthCount = 1;
+
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width * widthCount, 
                                       scrollView.frame.size.height);
 
-  // if this is the first time we retrieved these questions,
-  // we need to load the first non-title screen question and fade
-  // in the title screen answer
-  if (firstRun)
-  {
-    [self stopIndicating];
-    [self applyNewIndex: 1 questionController: nextQuestion];
-    [currentQuestion fadeInAnswer];
-  }
-  
-  [pool release];
+    // if this is the first time we retrieved these questions,
+    // we need to load the first non-title screen question and fade
+    // in the title screen answer
+    if (firstRun)
+    {
+        [self stopIndicating];
+        [self applyNewIndex: 1 questionController: nextQuestion];
+        [currentQuestion fadeInAnswer];
+    }
+
+    [pool release];
 }
 
 #pragma mark Question view manipulation
@@ -224,8 +224,7 @@
 		currentQuestion = nextQuestion;
 		nextQuestion = swapController;
 	}
-  
-  [nextQuestion fadeOutAnswer];
+
   [currentQuestion fadeInAnswer];
 
   // if we already have more than a page's worth of questions (which leads us to believe there are even more to be gotten)

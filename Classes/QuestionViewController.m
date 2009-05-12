@@ -19,59 +19,63 @@
 	if (questionIndex >= 0 && questionIndex < [[Datasource sharedDatasource] questionCount])
 	{
 		NSDictionary *questionData = [[Datasource sharedDatasource] dataForQuestion: questionIndex];
-		questionLabel.text = [questionData objectForKey: @"question"];
-		answerLabel.text = [[questionData objectForKey: @"answer"] boolValue] == YES ? @"YES" : @"NO";
+		[questionLabel setString: [questionData objectForKey: @"question"]];
+        [answerLabel setAlpha: [[Datasource sharedDatasource] displayedYet: questionIndex] ? 1.0 : 0.0];
+		[answerLabel setString: [[questionData objectForKey: @"answer"] boolValue] == YES ? @"YES" : @"NO"];
 	}
-}
-
-- (void) fadeOutAnswer
-{ 
-	[answerLabel setAlpha: 0];
 }
 
 - (void) fadeInAnswer
 {
-  [UIView beginAnimations: @"answerFadeIn" context: NULL];
-	[UIView setAnimationDuration: 0.5f];
-  [UIView setAnimationDelay: 0.2f];
-  [UIView setAnimationCurve: UIViewAnimationCurveEaseIn];
+    [UIView beginAnimations: @"answerFadeIn" context: NULL];
+    [UIView setAnimationDuration: 0.5f];
+    [UIView setAnimationDelay: 0.2f];
+    [UIView setAnimationCurve: UIViewAnimationCurveEaseIn];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(answerFadedIn:finished:context:)];
 
-	[answerLabel setAlpha: 1];
-	
-	[UIView commitAnimations];
+    [answerLabel setAlpha: 1.0];
+
+    [UIView commitAnimations];
 }
 
-/*
-// The designated initializer. Override to perform setup that is required before the view is loaded.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        // Custom initialization
-    }
-    return self;
+- (void) answerFadedIn: (NSString *) animationID
+              finished: (BOOL) finished
+               context: (void *) context
+{
+    [[Datasource sharedDatasource] setHasBeenDisplayed: self.questionIndex];
 }
-*/
 
-/*
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
-}
-*/
+    [super loadView];
 
-/*
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void) viewDidLoad 
-{
-  [super viewDidLoad];
+    questionLabel = [[FontLabel alloc] initWithPoint:CGPointMake(160, 130) 
+                                                name:@"MyriadPro-Regular" 
+                                                size:24.0f 
+                                               color:[UIColor blackColor] 
+                                           autoframe:YES];
+    [questionLabel setJustify: kCenter];
+    [questionLabel setString:@"Is it an App?"];
+    [self.view addSubview:questionLabel];
+    [questionLabel release];
+    
+    answerLabel = [[FontLabel alloc] initWithPoint:CGPointMake(160, 190) 
+                                                name:@"MyriadPro-Bold" 
+                                                size:48.0f 
+                                               color:[UIColor blackColor] 
+                                           autoframe:YES];
+    [answerLabel setJustify: kCenter];
+    [answerLabel setString:@"YES"];
+    [self.view addSubview:answerLabel];
+    [answerLabel release];
 }
-*/
 
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+- (void)viewDidUnload {
+    [questionLabel release];
+    [answerLabel release];
+    [super viewDidLoad];
 }
-*/
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview

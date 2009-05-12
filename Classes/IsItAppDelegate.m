@@ -8,6 +8,7 @@
 
 #import "IsItAppDelegate.h"
 #import "IsItViewController.h"
+#import "FontLabel.h"
 
 @implementation IsItAppDelegate
 
@@ -15,7 +16,10 @@
 @synthesize viewController;
 
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {    
+- (void)applicationDidFinishLaunching:(UIApplication *)application { 
+    
+    [FontLabel loadFont:@"MyriadPro-Bold"];
+    [FontLabel loadFont:@"MyriadPro-Regular"];
     
     // Override point for customization after app launch    
     [window addSubview:viewController.view];
