@@ -52,7 +52,7 @@
     
     [self startIndicating];
     [scrollView setScrollEnabled: NO];
-
+    
     // now fetch the other questions from the server
     [NSThread detachNewThreadSelector: @selector(retrieveQuestions:) 
                              toTarget: self 
@@ -66,17 +66,17 @@
   // add indicator
   CGRect frame = indicator.frame;
   frame.origin.x = 320 / 2 - frame.size.width / 2;
-  frame.origin.y = 208;
+  frame.origin.y = 260;
   indicator.frame = frame;
   [scrollView addSubview: indicator];
 }
 
 - (void) startIndicating
 {
-  [UIView beginAnimations: @"indicatorFadeIn" context: NULL];
-	[UIView setAnimationDuration: 0.2f];
-	[indicator startAnimating];
-	[UIView commitAnimations];
+    [UIView beginAnimations: @"indicatorFadeIn" context: NULL];
+    [UIView setAnimationDuration: 0.2f];
+    [indicator startAnimating];
+    [UIView commitAnimations];
 }
 
 - (void) stopIndicating

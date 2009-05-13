@@ -19,9 +19,9 @@
 	if (questionIndex >= 0 && questionIndex < [[Datasource sharedDatasource] questionCount])
 	{
 		NSDictionary *questionData = [[Datasource sharedDatasource] dataForQuestion: questionIndex];
-		[questionLabel setString: [questionData objectForKey: @"question"]];
+		[questionLabel setText: [questionData objectForKey: @"question"]];
         [answerLabel setAlpha: [[Datasource sharedDatasource] displayedYet: questionIndex] ? 1.0 : 0.0];
-		[answerLabel setString: [[questionData objectForKey: @"answer"] boolValue] == YES ? @"YES" : @"NO"];
+		[answerLabel setText: [[questionData objectForKey: @"answer"] boolValue] == YES ? @"YES" : @"NO"];
 	}
 }
 
@@ -46,10 +46,12 @@
     [[Datasource sharedDatasource] setHasBeenDisplayed: self.questionIndex];
 }
 
+/*
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
     [super loadView];
 
+    
     questionLabel = [[FontLabel alloc] initWithPoint:CGPointMake(160, 130) 
                                                 name:@"MyriadPro-Regular" 
                                                 size:24.0f 
@@ -76,6 +78,7 @@
     [answerLabel release];
     [super viewDidLoad];
 }
+*/
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview

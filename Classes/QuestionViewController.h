@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FontLabel.h"
+//#import "FontLabel.h"
 
 @interface QuestionViewController : UIViewController {
-    FontLabel *questionLabel;
-    FontLabel *answerLabel;
+    //FontLabel *questionLabel;
+    //FontLabel *answerLabel;
+    IBOutlet UILabel *questionLabel;
+    IBOutlet UILabel *answerLabel;
     NSInteger questionIndex;
 }
 
