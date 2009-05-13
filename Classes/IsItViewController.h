@@ -10,11 +10,13 @@
 #import "QuestionViewController.h"
 
 @interface IsItViewController : UIViewController <UIScrollViewDelegate> {
-  IBOutlet UIScrollView *scrollView;
-  IBOutlet UIActivityIndicatorView *indicator;
+    IBOutlet UIScrollView *scrollView;
+    IBOutlet UIActivityIndicatorView *indicator;
   
 	QuestionViewController *currentQuestion;
 	QuestionViewController *nextQuestion;
+    
+    BOOL initialAnswer;
 }
 
 - (void) setupIndicator;
@@ -23,6 +25,8 @@
 
 - (void) retrieveQuestions: (BOOL) firstRun;
 - (void) completedRetrieval: (BOOL) firstRun;
+
+- (void) answerFadedIn: (NSNumber *) index;
 
 - (void) applyNewIndex: (NSInteger) newIndex 
     questionController: (QuestionViewController *) questionController;

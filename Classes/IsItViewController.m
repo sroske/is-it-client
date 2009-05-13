@@ -36,8 +36,14 @@
 
 - (void) viewDidLoad
 {
+    initialAnswer = YES;
+    
 	currentQuestion = [[QuestionViewController alloc] init];
+    [currentQuestion setTarget: self];
+    [currentQuestion setAction: @selector(answerFadedIn:)];
 	nextQuestion = [[QuestionViewController alloc] init];
+    [nextQuestion setTarget: self];
+    [nextQuestion setAction: @selector(answerFadedIn:)];
   
 	[scrollView addSubview: currentQuestion.view];
 	[scrollView addSubview: nextQuestion.view];
@@ -123,6 +129,15 @@
 
 #pragma mark Question view manipulation
 
+- (void) answerFadedIn: (NSNumber *) index
+{
+    if ([index intValue] == 0)
+    {
+        [scrollView setContentOffset: CGPointMake(scrollView.frame.size.width, 0.0) 
+                            animated: YES];
+    }
+}
+
 - (void) applyNewIndex: (NSInteger) newIndex 
     questionController: (QuestionViewController *) questionController
 {
@@ -150,8 +165,8 @@
 
 - (void) scrollViewDidScroll: (UIScrollView *) sender
 {
-  CGFloat pageWidth = scrollView.frame.size.width;
-  float fractionalPage = scrollView.contentOffset.x / pageWidth;
+    CGFloat pageWidth = scrollView.frame.size.width;
+    float fractionalPage = scrollView.contentOffset.x / pageWidth;
 	
 	NSInteger lowerNumber = floor(fractionalPage);
 	NSInteger upperNumber = lowerNumber + 1;
@@ -186,6 +201,14 @@
 			[self applyNewIndex: upperNumber questionController: nextQuestion];
 		}
 	}
+    // if we have "ended" on the first question and we haven't shown an initialAnswer
+    // this means it is the progrommatic setContentOffset from answerFadedIn:
+    // so we will call scrollViewDidEndDecelerating manually just this once.
+    if (fractionalPage == 1.00 && initialAnswer)
+    {
+        initialAnswer = NO;
+        [self scrollViewDidEndDecelerating: sender];
+    }
 }
 
 - (void) scrollViewDidEndDecelerating: (UIScrollView *) sender

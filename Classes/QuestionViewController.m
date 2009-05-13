@@ -11,7 +11,7 @@
 
 @implementation QuestionViewController
 
-@synthesize questionIndex;
+@synthesize questionIndex, target, action;
 
 - (void) setQuestionIndex: (NSInteger) newQuestionIndex
 {
@@ -43,6 +43,10 @@
               finished: (BOOL) finished
                context: (void *) context
 {
+    if (![[Datasource sharedDatasource] displayedYet: questionIndex] && [self.target respondsToSelector: self.action])
+    {
+        [self.target performSelector: self.action withObject: [NSNumber numberWithInteger: self.questionIndex]];
+    }
     [[Datasource sharedDatasource] setHasBeenDisplayed: self.questionIndex];
 }
 

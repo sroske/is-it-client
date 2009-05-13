@@ -15,8 +15,12 @@
     IBOutlet UILabel *questionLabel;
     IBOutlet UILabel *answerLabel;
     NSInteger questionIndex;
+    id target;
+    SEL action;
 }
 
+@property (assign) id target;
+@property (assign) SEL action;
 @property NSInteger questionIndex;
 
 - (void) fadeInAnswer;
