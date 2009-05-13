@@ -23,6 +23,9 @@
 - (void) appendLastQuestion;
 - (void) appendQuestion: (NSString *) question
              withAnswer: (BOOL) answer;
+- (void) appendQuestion: (NSString *) question
+             withAnswer: (BOOL) answer
+       andLoadingScreen: (BOOL) loadingScreen;
 
 @end
 
@@ -40,6 +43,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
         currentPage = 1;
         displayedStates = [[NSMutableArray alloc] init];
         questions = [[NSMutableArray alloc] init];
+        loadingScreens = [[NSMutableArray alloc] init];
         [self appendQuestion: @"Is it an App?" withAnswer: YES];
 	}
 	return self;
@@ -49,6 +53,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
 {
     [displayedStates release];
     [questions release];
+    [loadingScreens release];
     [super dealloc];
 }
 
@@ -85,10 +90,16 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
 	else 
 	{
         NSArray *fetched = [[jsonData JSONValue] shuffledArray];
-        [questions addObjectsFromArray: fetched];
         for (int i = 0; i < [fetched count]; i++)
         {
+            [questions addObject: [fetched objectAtIndex: i]];
             [displayedStates addObject: [NSNumber numberWithInteger: 0]];
+            [loadingScreens addObject: [NSNumber numberWithInteger: 0]];
+            
+            if ([fetched count] >= QUESTIONS_PER_PAGE && i == (QUESTIONS_PER_PAGE / 2))
+            {
+                [self appendQuestion: @"Have more questions been loaded?" withAnswer: YES andLoadingScreen: YES];
+            }
         }
         // if we received less than a whole pages worth of questions, add the last question
         if ([fetched count] < QUESTIONS_PER_PAGE)
@@ -120,6 +131,15 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
     }    
 }
 
+- (BOOL) isLoadingScreen: (NSInteger) index
+{
+    if (index >= 0 && index < [loadingScreens count])
+    {
+        return [[loadingScreens objectAtIndex: index] intValue] == 1;        
+    }
+    return NO;
+}
+
 - (void) cleanupOldQuestions
 {
   // TODO, clear out some of the older question entries to free up memory
@@ -143,10 +163,18 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
 - (void) appendQuestion: (NSString *) question
              withAnswer: (BOOL) answer
 {
+    [self appendQuestion: question withAnswer: answer andLoadingScreen: NO];
+}
+
+- (void) appendQuestion: (NSString *) question
+             withAnswer: (BOOL) answer
+       andLoadingScreen: (BOOL) loadingScreen
+{
     NSArray *keys = [NSArray arrayWithObjects: @"question", @"answer", nil];
     NSArray *objects = [NSArray arrayWithObjects: question, answer ? @"1" : @"0", nil];
     [questions addObject: [NSDictionary dictionaryWithObjects: objects forKeys: keys]];
     [displayedStates addObject: [NSNumber numberWithInteger: 0]];
+    [loadingScreens addObject: [NSNumber numberWithInteger: loadingScreen]];
 }
 
 @end

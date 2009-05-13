@@ -11,6 +11,7 @@
 @interface Datasource : NSObject {
     NSMutableArray *questions;
     NSMutableArray *displayedStates;
+    NSMutableArray *loadingScreens;
     BOOL lastRetrieveSucceeded;
     BOOL appendedLastQuestion;
     int currentPage;
@@ -24,6 +25,8 @@
 
 - (BOOL) displayedYet: (NSInteger) index;
 - (void) setHasBeenDisplayed: (NSInteger) index;
+
+- (BOOL) isLoadingScreen: (NSInteger) index;
 
 - (BOOL) retrieveMoreQuestions;
 - (void) cleanupOldQuestions;

@@ -224,11 +224,7 @@
         nextQuestion = swapController;
     }
 
-    // if we already have more than a page's worth of questions (which leads us to believe there are even more to be gotten)
-    // and we have less than half a page's worth left, go fetch some more
-    NSInteger questionsPerPage = [[Datasource sharedDatasource] questionsCountPerPage];
-    if ([[Datasource sharedDatasource] questionCount] > questionsPerPage && 
-        currentQuestion.questionIndex + 1 > [[Datasource sharedDatasource] questionCount] - (questionsPerPage / 2))
+    if ([[Datasource sharedDatasource] isLoadingScreen: currentQuestion.questionIndex])
     {
         [scrollView setScrollEnabled: NO];
         [self startIndicating];
