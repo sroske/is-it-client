@@ -11,7 +11,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string>Icon.png</string>
+	<string>icon-small.png</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.sroske.isit</string>
 	<key>CFBundleInfoDictionaryVersion</key>

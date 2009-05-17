@@ -38,10 +38,10 @@
 {
     initialAnswer = YES;
     
-	currentQuestion = [[QuestionViewController alloc] init];
+	currentQuestion = [[QuestionViewController alloc] initWithNibName: @"QuestionViewController" bundle: nil];
     [currentQuestion setTarget: self];
     [currentQuestion setAction: @selector(answerFadedIn:)];
-	nextQuestion = [[QuestionViewController alloc] init];
+	nextQuestion = [[QuestionViewController alloc] initWithNibName: @"QuestionViewController" bundle: nil];
     [nextQuestion setTarget: self];
     [nextQuestion setAction: @selector(answerFadedIn:)];
   

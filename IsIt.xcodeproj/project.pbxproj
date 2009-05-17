@@ -15,6 +15,7 @@
 		2899E5220DE3E06400AC0155 /* IsItViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2899E5210DE3E06400AC0155 /* IsItViewController.xib */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		28D7ACF80DDB3853001CB0EB /* IsItViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* IsItViewController.m */; };
+		A95D7EFE0FBF961300CE70CD /* icon-small.png in Resources */ = {isa = PBXBuildFile; fileRef = A95D7EFD0FBF961300CE70CD /* icon-small.png */; };
 		A97EC4460FBE41D7005474ED /* main-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = A97EC4440FBE41D7005474ED /* main-bg.png */; };
 		A97EC4470FBE41D7005474ED /* question-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = A97EC4450FBE41D7005474ED /* question-bg.png */; };
 		A99DA7CB0FAFB8DD00DEC594 /* QuestionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A99DA7CA0FAFB8DD00DEC594 /* QuestionViewController.m */; };
@@ -23,7 +24,6 @@
 		A9C869C90FB90C600081D5D2 /* FontLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C869C80FB90C600081D5D2 /* FontLabel.m */; };
 		A9D0F96C0FAFE63F00E399BF /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D0F96B0FAFE63F00E399BF /* Default.png */; };
 		A9D8C8180FB12876006E59EF /* NSArray-Shuffle.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D8C8170FB12876006E59EF /* NSArray-Shuffle.m */; };
-		A9FCC33B0FB0914B00FB7A02 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A9FCC33A0FB0914B00FB7A02 /* Icon.png */; };
 		A9FCC3430FB0919600FB7A02 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = A9FCC3420FB0919600FB7A02 /* Entitlements.plist */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +41,7 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* IsIt_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IsIt_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A95D7EFD0FBF961300CE70CD /* icon-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-small.png"; path = "assets/icon-small.png"; sourceTree = "<group>"; };
 		A97EC4440FBE41D7005474ED /* main-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "main-bg.png"; path = "assets/main-bg.png"; sourceTree = "<group>"; };
 		A97EC4450FBE41D7005474ED /* question-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "question-bg.png"; path = "assets/question-bg.png"; sourceTree = "<group>"; };
 		A99DA7C90FAFB8DD00DEC594 /* QuestionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionViewController.h; sourceTree = "<group>"; };
@@ -54,7 +55,6 @@
 		A9D0F96B0FAFE63F00E399BF /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		A9D8C8160FB12876006E59EF /* NSArray-Shuffle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray-Shuffle.h"; path = "Classes/NSArray-Shuffle.h"; sourceTree = "<group>"; };
 		A9D8C8170FB12876006E59EF /* NSArray-Shuffle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSArray-Shuffle.m"; path = "Classes/NSArray-Shuffle.m"; sourceTree = "<group>"; };
-		A9FCC33A0FB0914B00FB7A02 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		A9FCC3420FB0919600FB7A02 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -147,7 +147,7 @@
 		A9D0F96A0FAFE62F00E399BF /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				A9FCC33A0FB0914B00FB7A02 /* Icon.png */,
+				A95D7EFD0FBF961300CE70CD /* icon-small.png */,
 				A97EC4440FBE41D7005474ED /* main-bg.png */,
 				A97EC4450FBE41D7005474ED /* question-bg.png */,
 				A9D0F96B0FAFE63F00E399BF /* Default.png */,
@@ -201,10 +201,10 @@
 				2899E5220DE3E06400AC0155 /* IsItViewController.xib in Resources */,
 				A99DA7D60FAFB95A00DEC594 /* QuestionViewController.xib in Resources */,
 				A9D0F96C0FAFE63F00E399BF /* Default.png in Resources */,
-				A9FCC33B0FB0914B00FB7A02 /* Icon.png in Resources */,
 				A9FCC3430FB0919600FB7A02 /* Entitlements.plist in Resources */,
 				A97EC4460FBE41D7005474ED /* main-bg.png in Resources */,
 				A97EC4470FBE41D7005474ED /* question-bg.png in Resources */,
+				A95D7EFE0FBF961300CE70CD /* icon-small.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

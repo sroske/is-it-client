@@ -15,7 +15,7 @@
 
 //#define QUESTIONS_URL @"http://google.com/%i"
 //#define QUESTIONS_URL @"http://localhost:3000/questions/random/%i.js"
-#define QUESTIONS_URL @"http://isitanapp.com/questions/random/%i.js"
+#define QUESTIONS_URL @"http://www.isitanapp.com/questions/random/%i.js"
 
 @interface Datasource (Private)
 
@@ -149,15 +149,23 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
     
 - (void) appendStaticQuestions
 {
-  [self appendQuestion: @"Is it Christmas?" withAnswer: NO];
-  [self appendQuestion: @"Is it Easter?" withAnswer: NO];
+    [self appendQuestion: @"Is life fair?" withAnswer: NO];
+    [self appendQuestion: @"Are you awesome?" withAnswer: NO];
+    [self appendQuestion: @"Am I tired?" withAnswer: YES];
+    [self appendQuestion: @"Is my computer on?" withAnswer: YES];
+    [self appendQuestion: @"Has the Large Hadron Collider destroyed the world yet?" withAnswer: NO];
+    [self appendQuestion: @"Is Helvetica the best font?" withAnswer: NO];
+    [self appendQuestion: @"Is Barack Obama Muslin?" withAnswer: NO];
+    [self appendQuestion: @"Do websites need to look exactly the same in every browser?" withAnswer: NO];
+    [self appendQuestion: @"Does Internet Explorer suck?" withAnswer: YES];
+    [self appendQuestion: @"Is it ok to use Comic Sans yet?" withAnswer: NO];
 }
 
 - (void) appendLastQuestion
 {
-  if (appendedLastQuestion) return;
-  [self appendQuestion: @"Is this the last question?" withAnswer: YES];
-  appendedLastQuestion = YES;
+    if (appendedLastQuestion) return;
+    [self appendQuestion: @"Is this the last question?" withAnswer: YES];
+    appendedLastQuestion = YES;
 }
 
 - (void) appendQuestion: (NSString *) question
