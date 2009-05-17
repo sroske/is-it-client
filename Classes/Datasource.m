@@ -159,6 +159,11 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(Datasource);
     [self appendQuestion: @"Do websites need to look exactly the same in every browser?" withAnswer: NO];
     [self appendQuestion: @"Does Internet Explorer suck?" withAnswer: YES];
     [self appendQuestion: @"Is it ok to use Comic Sans yet?" withAnswer: NO];
+    [self appendQuestion: @"Is 0.999... equal to 1?" withAnswer: YES];
+    [self appendQuestion: @"Is it secret, is it safe?" withAnswer: YES];
+    [self appendQuestion: @"Do all your base belong to us?" withAnswer: YES];
+    [self appendQuestion: @"Is Keyboard Cat alive and well?" withAnswer: NO];
+    [self appendQuestion: @"I know, right?" withAnswer: NO];
 }
 
 - (void) appendLastQuestion
